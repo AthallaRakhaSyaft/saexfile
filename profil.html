@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
-     <!-- Favicon -->
-     <link rel="icon" type="image/jpg" href="logo.jpg">
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpg" href="logo.jpg">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -52,23 +52,23 @@
             background-color: #0056b3;
         }
         .logo {
-        display: block;  /* Agar elemen img bersifat blok */
-        margin: 0 auto;  /* Memusatkan gambar secara horizontal */
-        width: 80px;  /* Atur ukuran */
-        height: 80px;
-        border-radius: 50%;  /* Membuat gambar bulat */
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Efek bayangan */
-        object-fit: cover; /* Memastikan gambar tidak terdistorsi */
+            display: block;
+            margin: 0 auto;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            object-fit: cover;
         }
     </style>
 </head>
 <body>
     <div class="container">
-    <!-- Logo -->
-    <img src="logo.jpg" alt="Logo" class="logo">
+        <!-- Logo -->
+        <img src="logo.jpg" alt="Logo" class="logo">
         <center><h2>Edit Profile</h2></center>
         <img id="profilePic" class="profile-pic" src="default-profile.png" alt="Profile Picture">
-        <i<input type="file" id="profilePicInput" accept="image/*">
+        <input type="file" id="profilePicInput" accept="image/*">
         <input type="text" id="name" placeholder="Your Name">
         <input type="email" id="email" placeholder="Your Email">
         <textarea id="bio" placeholder="Short Bio"></textarea>
@@ -82,17 +82,16 @@
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const bio = document.getElementById('bio').value;
-            const profilePic = document.getElementById('profilePic').src; // Mengambil gambar dari src
+            const profilePic = document.getElementById('profilePic').src; // Ambil gambar dari src
 
             const profileData = {
                 name: name,
                 email: email,
                 bio: bio,
-                profilePic: profilePic // Menyimpan gambar dalam format base64
+                profilePic: profilePic // Simpan gambar dalam format base64
             };
 
             localStorage.setItem('profileData', JSON.stringify(profileData));
-
             alert('Profile saved successfully!');
         }
 
@@ -113,12 +112,10 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     document.getElementById('profilePic').src = e.target.result;
-                    localStorage.setItem('profilePic', e.target.result); // Simpan ke LocalStorage
                 };
                 reader.readAsDataURL(file);
             }
         });
-
     </script>
 </body>
 </html>
