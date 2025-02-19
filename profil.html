@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+     <!-- Favicon -->
+     <link rel="icon" type="image/jpg" href="logo.jpg">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            width: 80%;
+            max-width: 400px;
+            text-align: left;
+        }
+        .profile-pic {
+            display: block;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            object-fit: cover;
+            border: 2px solid #007bff;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .logo {
+        display: block;  /* Agar elemen img bersifat blok */
+        margin: 0 auto;  /* Memusatkan gambar secara horizontal */
+        width: 80px;  /* Atur ukuran */
+        height: 80px;
+        border-radius: 50%;  /* Membuat gambar bulat */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Efek bayangan */
+        object-fit: cover; /* Memastikan gambar tidak terdistorsi */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <!-- Logo -->
+    <img src="logo.jpg" alt="Logo" class="logo">
+        <center><h2>Edit Profile</h2></center>
+        <img id="profilePic" class="profile-pic" src="default-profile.png" alt="Profile Picture">
+        <i<input type="file" id="profilePicInput" accept="image/*">
+        <input type="text" id="name" placeholder="Your Name">
+        <input type="email" id="email" placeholder="Your Email">
+        <textarea id="bio" placeholder="Short Bio"></textarea>
+        <button onclick="saveProfile()">Save Profile</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", loadProfile);
+
+        function saveProfile() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const bio = document.getElementById('bio').value;
+            const profilePic = document.getElementById('profilePic').src; // Mengambil gambar dari src
+
+            const profileData = {
+                name: name,
+                email: email,
+                bio: bio,
+                profilePic: profilePic // Menyimpan gambar dalam format base64
+            };
+
+            localStorage.setItem('profileData', JSON.stringify(profileData));
+
+            alert('Profile saved successfully!');
+        }
+
+        function loadProfile() {
+            const savedProfile = localStorage.getItem('profileData');
+            if (savedProfile) {
+                const profile = JSON.parse(savedProfile);
+                document.getElementById('name').value = profile.name || '';
+                document.getElementById('email').value = profile.email || '';
+                document.getElementById('bio').value = profile.bio || '';
+                document.getElementById('profilePic').src = profile.profilePic || 'default-profile.png';
+            }
+        }
+
+        document.getElementById('profilePicInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profilePic').src = e.target.result;
+                    localStorage.setItem('profilePic', e.target.result); // Simpan ke LocalStorage
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+    </script>
+</body>
+</html>

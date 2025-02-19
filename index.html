@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Save Excel File</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpg" href="logo.jpg">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            width: 80%;
+            max-width: 600px;
+            position: relative;
+        }
+        .menu-btn {
+            font-size: 25px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #007bff;
+        }
+        .drawer {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.3s;
+            padding-top: 60px;
+        }
+        .drawer a {
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 18px;
+            color: white;
+            display: block;
+            transition: 0.2s;
+        }
+        .drawer a:hover {
+            background-color: #575757;
+        }
+        .file-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .file-card {
+            background: #fff;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 45%;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .delete-btn {
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #dc3545;
+            color: white;
+        }
+        .search-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .search-box {
+            padding: 10px;
+            width: 80%;
+            max-width: 350px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .logo {
+        display: block;  /* Agar elemen img bersifat blok */
+        margin: 0 auto;  /* Memusatkan gambar secara horizontal */
+        width: 80px;  /* Atur ukuran */
+        height: 80px;
+        border-radius: 50%;  /* Membuat gambar bulat */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Efek bayangan */
+        object-fit: cover; /* Memastikan gambar tidak terdistorsi */
+        }
+    </style>
+</head>
+<body>
+    <button class="menu-btn" onclick="openDrawer()">☰</button>
+    <div id="drawer" class="drawer">
+        <span class="close-btn" onclick="closeDrawer()">&times;</span>
+        <a href="#" onclick="viewTrash()">🗑 Sampah</a>
+    </div>
+
+    <div class="container">
+    <!-- Logo -->
+    <img src="logo.jpg" alt="Logo" class="logo">
+        <h2>Home</h2>
+        <div class="search-container">
+            <input type="text" class="search-box" id="searchInput" placeholder="Cari file..." onkeyup="searchFiles()">
+            <a href="profil.html">
+                <img id="profileImage" src="default-profile.png" alt="Profile" class="profile-icon">
+            </a>                      
+        </div>
+        <input type="file" id="fileInput" accept=".xls,.xlsx" multiple>
+        <button onclick="uploadFiles()">Upload Files</button>
+        <h3>Saved Files</h3>
+        <div class="file-list" id="fileList"></div>
+    </div>
+
+    <script>
+        function openDrawer() { document.getElementById("drawer").style.width = "250px"; }
+        function closeDrawer() { document.getElementById("drawer").style.width = "0"; }
+        
+        function uploadFiles() {
+            const files = document.getElementById('fileInput').files;
+            if (!files.length) return alert('No files selected.');
+            let savedFiles = JSON.parse(localStorage.getItem('excelFiles')) || {};
+            for (let file of files) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    savedFiles[file.name] = e.target.result;
+                    localStorage.setItem('excelFiles', JSON.stringify(savedFiles));
+                    displayFiles();
+                };
+                reader.readAsDataURL(file);
+            }
+            alert('Files uploaded successfully!');
+        }
+        
+        function displayFiles() {
+            let savedFiles = JSON.parse(localStorage.getItem('excelFiles')) || {};
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
+            Object.keys(savedFiles).forEach(fileName => {
+                let div = document.createElement('div');
+                div.classList.add('file-card');
+                let link = document.createElement('a');
+                link.href = savedFiles[fileName];
+                link.download = fileName;
+                link.textContent = fileName;
+                let deleteBtn = document.createElement('button');
+                deleteBtn.classList.add('delete-btn');
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.onclick = function() { moveToTrash(fileName); };
+                div.appendChild(link);
+                div.appendChild(deleteBtn);
+                fileList.appendChild(div);
+            });
+        }
+        
+        function searchFiles() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let fileCards = document.querySelectorAll('.file-card');
+            fileCards.forEach(card => {
+                let fileName = card.querySelector('a').textContent.toLowerCase();
+                card.style.display = fileName.includes(input) ? 'flex' : 'none';
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+    const savedProfile = localStorage.getItem('profileData');
+    if (savedProfile) {
+        const profile = JSON.parse(savedProfile);
+        document.getElementById('profileImage').src = profile.profilePic || 'default-profile.png';
+    }
+});
+        
+        document.addEventListener('DOMContentLoaded', displayFiles);
+    </script>
+</body>
+</html>
